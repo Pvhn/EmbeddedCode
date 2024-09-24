@@ -1,0 +1,6 @@
+# FIXED
+
+CORE_LIB/HAL_PMM.obj: ../CORE_LIB/HAL_PMM.c
+
+../CORE_LIB/HAL_PMM.c:
+

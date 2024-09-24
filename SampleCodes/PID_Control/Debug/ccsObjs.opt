@@ -1,0 +1,11 @@
+"./adc0.obj"
+"./backlight.obj"
+"./graphics_lcd.obj"
+"./kb.obj"
+"./motor_control.obj"
+"./pid.obj"
+"./qei0.obj"
+"./tm4c123gh6pm_startup_ccs.obj"
+"./wait.obj"
+"../tm4c123gh6pm.cmd"
+-llibc.a

@@ -1,0 +1,9 @@
+"./main_open_loop.obj"
+"./F5xx_F6xx_Core_Lib/HAL_FLASH.obj"
+"./F5xx_F6xx_Core_Lib/HAL_PMAP.obj"
+"./F5xx_F6xx_Core_Lib/HAL_PMM.obj"
+"./F5xx_F6xx_Core_Lib/HAL_TLV.obj"
+"./F5xx_F6xx_Core_Lib/HAL_UCS.obj"
+"../lnk_msp430f5529.cmd"
+-llibmath.a
+-llibc.a

@@ -1,0 +1,6 @@
+# FIXED
+
+CORE_LIB/HAL_UCS.obj: ../CORE_LIB/HAL_UCS.c
+
+../CORE_LIB/HAL_UCS.c:
+

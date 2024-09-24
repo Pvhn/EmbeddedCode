@@ -1,0 +1,6 @@
+# FIXED
+
+CORE_LIB/HAL_PMAP.obj: ../CORE_LIB/HAL_PMAP.c
+
+../CORE_LIB/HAL_PMAP.c:
+

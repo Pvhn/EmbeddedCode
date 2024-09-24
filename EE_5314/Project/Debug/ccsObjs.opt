@@ -1,0 +1,8 @@
+"./Nguyen_Peter_1001495756.obj"
+"./Uart0.obj"
+"./eeprom.obj"
+"./project.obj"
+"./tm4c123gh6pm_startup_ccs.obj"
+"./wait.obj"
+"../tm4c123gh6pm.cmd"
+-llibc.a

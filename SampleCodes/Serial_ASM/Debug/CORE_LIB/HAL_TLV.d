@@ -1,0 +1,6 @@
+# FIXED
+
+CORE_LIB/HAL_TLV.obj: ../CORE_LIB/HAL_TLV.c
+
+../CORE_LIB/HAL_TLV.c:
+
