@@ -33,3 +33,8 @@ void System_Init(void)
     GPIO_PORTF_DEN_R |= 0x02;     // Set Digital Enable
     GPIO_PORTF_DR2R_R |= 0x02;    // Set Drive Strength to 2mA (default)
 }
+
+void Test_DAC(void)
+{
+
+}

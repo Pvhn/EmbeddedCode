@@ -6,6 +6,9 @@
  */
 
 #include "Utilities.h"
+#include "Keys.h"
+#include "Sound.h"
+#include "DAC.h"
 
 int main(void)
 {
@@ -14,18 +17,18 @@ int main(void)
     DAC_Init();
     Sound_Init();
 
-    uint32_t keys_pv = 0;
-
     while(1)
     {
         if(keys == 0)
         {
-            play = 0;
+            Sound_Stop();
         }
         else
         {
             Sound_Play(Notes[keys-1]);
         }
+
+//        DAC_Test();
 
 //        Sound_Play(Notes[3]);
 //        _delay_cycles(3000000);

@@ -12,15 +12,25 @@
 #include <stdint.h>
 #include <tm4c123gh6pm.h>
 
+/*========================================================
+ * Preprocessor Defintions
+ *========================================================
+ */
+// Memory Alias for PortE0-2
 #define KEYS (*((volatile uint32_t *)0x4002403C))
-
 #define KEYS_MASK 0x0F
 
+/*========================================================
+ * Variable Declarations
+ *========================================================
+ */
+extern volatile uint32_t keys;
+
+/*========================================================
+ * Function Declarations
+ *========================================================
+ */
 extern void Key_Init(void);
-
 extern uint32_t Key_In(void);
-
-extern uint32_t keys;
-extern uint32_t update;
 
 #endif /* KEYS_H_ */

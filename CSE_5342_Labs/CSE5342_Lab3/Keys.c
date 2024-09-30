@@ -7,15 +7,32 @@
 
 #include "Keys.h"
 
-uint32_t keys = 0;
-uint32_t update = 0;
+/*========================================================
+ * Variable Definitions
+ *========================================================
+ */
+// Input used to store state of key presses
+volatile uint32_t keys = 0;
 
+/*========================================================
+ * Function Definitions
+ *========================================================
+ */
+
+/*=======================================================
+ * Function Name: Key_Init
+ *=======================================================
+ * Parameters: None
+ * Returns: None
+ * Description:
+ * This function initializes the GPIO ports for the
+ * key inputs. The function also will set-up and enable
+ * key press interrupts for PortE
+ *========================================================*/
 void Key_Init(void)
 {
     // Enable PORTE Peripheral
     SYSCTL_RCGCGPIO_R |= 0x0010;
-    // Enable Timer Peripheral
-    SYSCTL_RCGCTIMER_R |= SYSCTL_RCGCTIMER_R1;
     _delay_cycles(3);
 
     GPIO_PORTE_DIR_R &= ~KEYS_MASK;   // Enable PE0,1,2,3 as inputs
@@ -30,46 +47,48 @@ void Key_Init(void)
     GPIO_PORTE_ICR_R |= KEYS_MASK;       // Clear any pending Interrupts
     GPIO_PORTE_IM_R |= KEYS_MASK;        // Turn on Switch Interrupts
     NVIC_EN0_R |= 1 << (INT_GPIOE-16);   // Enable interrupts for Port E
-
-    // Configuring Timer Interrupt (for debounce)
-    TIMER1_CTL_R &= ~TIMER_CTL_TAEN;            // turn-off timer before reconfiguring
-    TIMER1_CFG_R = TIMER_CFG_32_BIT_TIMER;      // configure as 32-bit timer (A+B)
-    TIMER1_TAMR_R = TIMER_TAMR_TAMR_PERIOD;     // configure for periodic mode (count down)
-    TIMER1_TAILR_R = 1000;                    // set load value to 1e3 for 100 Hz interrupt rate
-    TIMER1_CTL_R |= TIMER_CTL_TAEN;             // turn-on timer
-    NVIC_EN0_R |= 1 << (INT_TIMER1A-16);        // turn-on interrupt 37 (TIMER1A)
 }
 
+/*=======================================================
+ * Function Name: Key_In
+ *=======================================================
+ * Parameters: None
+ * Returns: KEYS
+ * Description:
+ * This function simply returns a read of the Port E
+ * pins 0-3 using the KEYS bit-band alias.
+ *========================================================
+ */
 uint32_t Key_In(void)
 {
+    // Returns the Data Register Read of PortE0-3
     return KEYS;
 }
 
+/*=======================================================
+ * Function Name: PortEISR
+ *=======================================================
+ * Parameters: None
+ * Returns: None
+ * Description:
+ * This interrupt service routine handles key press
+ * interrupts on Port E. Since multiple key presses can
+ * trigger the Port E Interrupt, the Masked Interrupt
+ * Status(MIS) must be saved at the beginning of the ISR.
+ * This allows for the ISR to clear only the interrupt
+ * for the key(s) being serviced in the current iteration.
+ * The ISR will perform a call to Keys_In function to
+ * perform a read of the keys pressed.
+ *========================================================
+ */
 void PortEISR(void)
 {
+    // Save off current Interrupt Status
+    uint32_t MIS_R = GPIO_PORTE_MIS_R & KEYS_MASK;
+
+    // Read Keys pressed
     keys = Key_In();
 
-    // Enable Timer Interrupt for debounce
-    GPIO_PORTF_IM_R &= ~KEYS_MASK;
-    GPIO_PORTF_ICR_R |= KEYS_MASK;
-    TIMER1_IMR_R = TIMER_IMR_TATOIM;
-}
-
-void Timer1ISR()
-{
-    static uint8_t debounceCount = 0;
-
-    debounceCount ++;
-
-    // Debounce time is approximately (1/100Hz)*10 = 100ms
-    if (debounceCount == 10)
-    {
-        debounceCount = 0;
-        GPIO_PORTE_ICR_R |= KEYS_MASK;       // Clear switch interrupts that occurred during debounce time.
-        GPIO_PORTE_IM_R |= KEYS_MASK;        // Re-enable switch interrupt for next press.
-        TIMER1_IMR_R &= ~TIMER_IMR_TATOIM;  // Turn off timer interrupt
-    }
-
-    // Clear Timer Interrupt flag
-    TIMER1_ICR_R = TIMER_ICR_TATOCINT;
+    // Clear the interrupt(s) for the pin(s) serviced
+    GPIO_PORTE_ICR_R |= MIS_R;
 }
